@@ -1,10 +1,20 @@
 import { QueryParams } from 'constants/query';
 import PanelWrapper from 'container/PanelWrapper/PanelWrapper';
+import useUrlQuery from 'hooks/useUrlQuery';
 import { GetQueryResultsProps } from 'lib/dashboard/getQueryResults';
+import GetMinMax from 'lib/getMinMax';
 import getTimeString from 'lib/getTimeString';
-import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import history from 'lib/history';
+import {
+	Dispatch,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useRef,
+} from 'react';
 import { UseQueryResult } from 'react-query';
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { UpdateTimeInterval } from 'store/actions';
 import { SuccessResponse } from 'types/api';
 import { Widgets } from 'types/api/dashboard/getAll';
@@ -17,6 +27,8 @@ function WidgetGraph({
 }: WidgetGraphProps): JSX.Element {
 	const graphRef = useRef<HTMLDivElement>(null);
 	const dispatch = useDispatch();
+	const urlQuery = useUrlQuery();
+	const location = useLocation();
 
 	const handleBackNavigation = (): void => {
 		const searchParams = new URLSearchParams(window.location.search);
@@ -33,6 +45,28 @@ function WidgetGraph({
 		}
 	};
 
+	const onDragSelect = useCallback(
+		(start: number, end: number): void => {
+			const startTimestamp = Math.trunc(start);
+			const endTimestamp = Math.trunc(end);
+
+			if (startTimestamp !== endTimestamp) {
+				dispatch(UpdateTimeInterval('custom', [startTimestamp, endTimestamp]));
+			}
+
+			const { maxTime, minTime } = GetMinMax('custom', [
+				startTimestamp,
+				endTimestamp,
+			]);
+
+			urlQuery.set(QueryParams.startTime, minTime.toString());
+			urlQuery.set(QueryParams.endTime, maxTime.toString());
+			const generatedUrl = `${location.pathname}?${urlQuery.toString()}`;
+			history.push(generatedUrl);
+		},
+		[dispatch, location.pathname, urlQuery],
+	);
+
 	useEffect(() => {
 		window.addEventListener('popstate', handleBackNavigation);
 
@@ -48,6 +82,7 @@ function WidgetGraph({
 				widget={selectedWidget}
 				queryResponse={queryResponse}
 				setRequestData={setRequestData}
+				onDragSelect={onDragSelect}
 			/>
 		</div>
 	);

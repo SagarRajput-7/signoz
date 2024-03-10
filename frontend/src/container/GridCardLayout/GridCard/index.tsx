@@ -29,6 +29,8 @@ function GridCardGraph({
 	threshold,
 	variables,
 	version,
+	onClickHandler,
+	onDragSelect,
 }: GridCardGraphProps): JSX.Element {
 	const dispatch = useDispatch();
 	const [errorMessage, setErrorMessage] = useState<string>();
@@ -162,6 +164,8 @@ function GridCardGraph({
 					headerMenuList={menuList}
 					isFetchingResponse={queryResponse.isFetching}
 					setRequestData={setRequestData}
+					onClickHandler={onClickHandler}
+					onDragSelect={onDragSelect}
 				/>
 			)}
 		</div>
