@@ -1,7 +1,4 @@
 import { QueryParams } from 'constants/query';
-import { PANEL_TYPES } from 'constants/queryBuilder';
-import { ThresholdProps } from 'container/NewWidget/RightContainer/Threshold/types';
-import { timePreferance } from 'container/NewWidget/RightContainer/timeItems';
 import PanelWrapper from 'container/PanelWrapper/PanelWrapper';
 import { GetQueryResultsProps } from 'lib/dashboard/getQueryResults';
 import getTimeString from 'lib/getTimeString';
@@ -15,15 +12,6 @@ import { MetricRangePayloadProps } from 'types/api/metrics/getQueryRange';
 
 function WidgetGraph({
 	selectedWidget,
-	yAxisUnit,
-	thresholds,
-	fillSpans,
-	softMax,
-	softMin,
-	selectedLogFields,
-	selectedTracesFields,
-	selectedTime,
-	selectedGraph,
 	queryResponse,
 	setRequestData,
 }: WidgetGraphProps): JSX.Element {
@@ -87,16 +75,7 @@ function WidgetGraph({
 }
 
 interface WidgetGraphProps {
-	thresholds: ThresholdProps[];
-	yAxisUnit: string;
 	selectedWidget: Widgets;
-	fillSpans: boolean;
-	softMax: number | null;
-	softMin: number | null;
-	selectedLogFields: Widgets['selectedLogFields'];
-	selectedTracesFields: Widgets['selectedTracesFields'];
-	selectedTime: timePreferance;
-	selectedGraph: PANEL_TYPES;
 	queryResponse: UseQueryResult<
 		SuccessResponse<MetricRangePayloadProps, unknown>,
 		Error
