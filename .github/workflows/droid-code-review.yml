@@ -38,6 +38,33 @@ jobs:
           git config user.name "Droid Agent"
           git config user.email "droidagent@factory.ai"
 
+      - name: Check for FACTORY_API_KEY
+        run: |
+          if [ -z "${{ secrets.FACTORY_API_KEY }}" ]; then
+            echo "FACTORY_API_KEY is missing."
+            exit 1
+          else
+            echo "FACTORY_API_KEY is set."
+          fi
+
+      - name: Check for GH_TOKEN
+        run: |
+          if [ -z "${{ secrets.GH_TOKEN }}" ]; then
+            echo "GH_TOKEN is missing."
+            exit 1
+          else
+            echo "GH_TOKEN is set."
+          fi
+
+      - name: Check for GITHUB_TOKEN
+        run: |
+          if [ -z "${{ secrets.GITHUB_TOKEN }}" ]; then
+            echo "GITHUB_TOKEN is missing."
+            exit 1
+          else
+            echo "GITHUB_TOKEN is set."
+          fi
+
       - name: Prepare review context
         run: |
           # Get the PR diff
